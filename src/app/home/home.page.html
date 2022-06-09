@@ -1,0 +1,147 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button>
+        <ion-icon name="card"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>Transaccion - Nueva Compra </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-list>
+    <ion-button
+      (click)="showModalTarjetas()"
+      expand="block"
+      shape="round"
+      color="warning"
+    >
+      Tarjetas de Credito Disponibles
+    </ion-button>
+    <ion-button
+      (click)="showModalTransacciones()"
+      expand="block"
+      shape="round"
+      color="warning"
+    >
+      Transacciones Realizadas
+    </ion-button>
+  </ion-list>
+
+  <!-- ngif value of operacion minor like 1000 -->
+  <form [formGroup]="transaccionForm" (ngSubmit)="onSaveForm()">
+    <ion-card>
+      <div *ngIf="showCard">
+        <div class="tarjeta">
+          <div class="grafico">
+            <img src="assets/icon/chip.png" class="imgChip" height="30px" />
+            <div class="marcaTarjeta">{{marcaElegida}}</div>
+            <div class="numero">{{tarjetaNumero}}</div>
+            <div class="fecha">{{fechaVencimiento||'00-00'}}</div>
+            <div class="nombreyapellido">{{cliente||''}}</div>
+          </div>
+        </div>
+
+        <ion-card-header>
+          <ion-card-title>Ingrese Los Datos de la Tarjeta</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-list>
+            <ion-item>
+              <ion-label position="floating">Tarjeta de Credito</ion-label>
+              <ion-select
+                placeholder="Seleccione Tarjeta"
+                (ionChange)="cambioMarcaTarjeta($event)"
+                formControlName="marca"
+              >
+                <ion-select-option
+                  *ngFor="let item of marcas"
+                  [value]="item.marca"
+                  >{{item.marca}}</ion-select-option
+                >
+              </ion-select>
+            </ion-item>
+
+            <ion-item>
+              <ion-label position="floating">Numero Tarjeta</ion-label>
+              <ion-input
+                type="number"
+                onKeyPress="if(this.value.length==16) return false;"
+                placeholder="0000 0000 0000 0000"
+                (ionChange)="cambioNumeroTarjeta($event)"
+                formControlName="numero"
+              ></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Fecha Vencimiento</ion-label>
+              <ion-datetime
+                [value]="fechaActual.toISOString"
+                displayFormat="MM/YYYY"
+                (ionChange)="cambioFecha($event)"
+                max="2030-12-31"
+                [min]="fechaMinima"
+                formControlName="vencimiento"
+              >
+              </ion-datetime>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Nombre y Apellido</ion-label>
+              <ion-input
+                (ionChange)="cambioNombreApellido($event)"
+                onKeyPress="if(this.value.length==20) return false;"
+                formControlName="cardholder"
+              >
+              </ion-input>
+            </ion-item>
+          </ion-list>
+        </ion-card-content>
+      </div>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6">
+            <ion-item lines="full">
+              <ion-label>Importe $</ion-label>
+              <ion-input
+                type="text"
+                type="number"
+                (ionChange)="ingresoMonto($event)"
+                formControlName="monto"
+              ></ion-input>
+            </ion-item>
+          </ion-col>
+
+          <ion-col size="6">
+            <ion-item lines="full">
+              <ion-label *ngIf="showCard">Tasa: {{tasaAplicada}}%</ion-label>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col size="8"></ion-col>
+          <ion-col size="4">
+            <ion-item lines="full">
+              <ion-label *ngIf="showCard"
+                >Total {{ importe + importe * tasaAplicada / 100}}</ion-label
+              >
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card>
+    <ion-button
+      expand="block"
+      shape="round"
+      color="success"
+      class="ion-padding"
+      type="submit"
+      [disabled]="!transaccionForm.valid"
+    >
+      Confirmar Compra
+    </ion-button>
+    <pre>{{transaccionForm.valid | json}}</pre>
+    <pre>{{transaccionForm.value |json}}</pre>
+  </form>
+</ion-content>

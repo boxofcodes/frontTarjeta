@@ -1,0 +1,20 @@
+<ion-content class="ion-padding">
+  <ion-button (click)="volver()" expand="block" shape="round" color="primary">
+    Volver
+  </ion-button>
+  <ion-list>
+    <ion-list-header> Listado de Tarjetas de Credito</ion-list-header>
+    <ion-item *ngFor="let item of marcas">
+      <ion-avatar slot="start">
+        <img
+          src="https://pngimg.com/uploads/credit_card/credit_card_PNG87.png"
+        />
+      </ion-avatar>
+      <ion-label>
+        <h2>{{item.descripcion}}</h2>
+        <p>Alias: {{item.marca}}</p>
+        <p>Tasa: {{item.tasa}} %</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
